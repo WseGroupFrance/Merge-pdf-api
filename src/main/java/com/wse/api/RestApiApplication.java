@@ -1,4 +1,4 @@
-package com.wse.api.restAPI;
+package com.wse.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
