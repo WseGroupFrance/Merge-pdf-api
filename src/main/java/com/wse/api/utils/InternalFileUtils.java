@@ -21,11 +21,15 @@ public class InternalFileUtils {
 	 */
 	public static FileAsBlob PathToEncoded(String path) throws IOException {
 		FileAsBlob fblob = new FileAsBlob();
-		fblob.setFileName(path.split("/")[path.split("/").length-1]);
-		byte[] bytesNonEncoded = Files.readAllBytes(new File(fblob.getFileName()).toPath());
-		fblob.setFileContent(new String(Base64.encodeBase64(bytesNonEncoded)));
-		
+		fblob.setName(path.split("/")[path.split("/").length-1]);
+		byte[] bytesNonEncoded = Files.readAllBytes(new File(fblob.getName()).toPath());
+		fblob.setBody((new String(Base64.encodeBase64(bytesNonEncoded))));
+		fblob.setContentType("application/pdf");
 		return fblob;
+	}
+	
+	public static void deleteLocalFile(String path) throws IOException, SecurityException {
+		if (!new File(path).delete()) throw new IOException("Le fichier ne semble pas accessible, pas de suppression");
 	}
 	
 }

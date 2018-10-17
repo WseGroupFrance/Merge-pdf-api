@@ -1,7 +1,7 @@
 package com.wse.api.pdfHandler;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 import com.wse.api.dto.FileAsBlob;
 
@@ -11,5 +11,5 @@ public interface IPDFHandler {
 	 * @input array of pdf documents as blobs
 	 * @output a pdf file representing all the pdfs merged
 	 */
-	public String mergeDocuments(List<FileAsBlob> ls) throws IOException;
+	public String mergeDocuments(ArrayList<FileAsBlob> ls) throws IOException;
 }
