@@ -17,6 +17,7 @@ public class FileAsBlob implements Serializable{
 	private String idSalesforce;
 	private String length;
 	private String contentType;
+	private Boolean isFirst;
 	
 	@Override
 	public String toString() {
@@ -43,6 +44,13 @@ public class FileAsBlob implements Serializable{
 	}
 	public FileAsBlob() {
 		super();
+		this.setIsFirst(false);
+	}
+	public Boolean getIsFirst() {
+		return isFirst;
+	}
+	public void setIsFirst(Boolean isFirst) {
+		this.isFirst = isFirst;
 	}
 	public FileAsBlob(String name, String body, String idSalesforce, String length, String contentType) {
 		super();
@@ -51,6 +59,16 @@ public class FileAsBlob implements Serializable{
 		this.idSalesforce = idSalesforce;
 		this.length = length;
 		this.contentType = contentType;
+	}
+	public FileAsBlob(String name, String body, String idSalesforce, String length, String contentType,
+			Boolean isFirst) {
+		super();
+		this.name = name;
+		this.body = body;
+		this.idSalesforce = idSalesforce;
+		this.length = length;
+		this.contentType = contentType;
+		this.isFirst = isFirst;
 	}
 	public String getLength() {
 		return length;
@@ -64,4 +82,5 @@ public class FileAsBlob implements Serializable{
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
+	
 }

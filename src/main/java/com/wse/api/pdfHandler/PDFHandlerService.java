@@ -10,6 +10,7 @@ import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.springframework.stereotype.Service;
 import com.wse.api.dto.FileAsBlob;
+import com.wse.api.utils.FileAsBlobComparator;
 
 @Service
 public class PDFHandlerService implements IPDFHandler {
@@ -19,6 +20,7 @@ public class PDFHandlerService implements IPDFHandler {
 	public String mergeDocuments(ArrayList<FileAsBlob> ls) throws IOException {
 		PDFMergerUtility pdfMU;
 		pdfMU = new PDFMergerUtility();
+		ls.sort(new FileAsBlobComparator());
 		ls.forEach(element ->{
 			if ("application/pdf".equals(element.getContentType())) {
 				System.out.println(String.format("Ajout du document: %s", element.getName()));
