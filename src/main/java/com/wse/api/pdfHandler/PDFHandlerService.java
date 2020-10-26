@@ -1,7 +1,9 @@
 package com.wse.api.pdfHandler;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 
@@ -9,8 +11,12 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.springframework.stereotype.Service;
+
 import com.wse.api.dto.FileAsBlob;
 import com.wse.api.utils.FileAsBlobComparator;
+
+import com.spire.doc.Document;
+import com.spire.doc.FileFormat;
 
 @Service
 public class PDFHandlerService implements IPDFHandler {
@@ -23,11 +29,27 @@ public class PDFHandlerService implements IPDFHandler {
 		ls.sort(new FileAsBlobComparator());
 		ls.forEach(element ->{
 			if ("application/pdf".equals(element.getContentType())) {
-				System.out.println(String.format("Ajout du document: %s", element.getName()));
+				System.out.println(String.format("Ajout du document pdf: %s", element.getName()));
 				pdfMU.addSource(new ByteArrayInputStream(Base64.getDecoder().decode(element.getBody())));
-			} else {
-				logger.debug("Attention le fichier n'est pas un pdf");
-			}				
+			} else if(element.getContentType().endsWith("document")){
+				try {
+					System.out.println(String.format("Ajout du document docx: %s", element.getName()));
+					String outputFile = element.getName().substring(0, element.getName().length() - 4) + "pdf";
+					//create word document
+					Document document = new Document();
+					InputStream docFile = new ByteArrayInputStream(Base64.getDecoder().decode(element.getBody()));
+					document.loadFromStream(docFile,FileFormat.Auto);
+					//save the document to a PDF file.
+					document.saveToFile(outputFile, FileFormat.PDF);
+					pdfMU.addSource(outputFile);
+					} catch (FileNotFoundException e) {
+						System.out.println("cannot find outputFile for convert doc to pdf"+e.getMessage());
+						e.printStackTrace();
+					}
+			}else {
+				logger.debug("Attention le fichier n'est pas conforme");
+			}
+			
 		});
 		pdfMU.setDestinationFileName(ls.get(0).getName()+ls.size());
 		logger.debug("file name: "+ pdfMU.getDestinationFileName());
