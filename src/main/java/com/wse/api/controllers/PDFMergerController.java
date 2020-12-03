@@ -64,6 +64,7 @@ public class PDFMergerController {
 		// generating response json
 		String returned = mapper.writer().writeValueAsString(fob);
 		// deleting document
+		pdfHandler.deletePDFFile();
 		try {
 			InternalFileUtils.deleteLocalFile(fileName);
 		} catch (Exception ex) {

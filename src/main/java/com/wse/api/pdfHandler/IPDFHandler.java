@@ -12,4 +12,6 @@ public interface IPDFHandler {
 	 * @output a pdf file representing all the pdfs merged
 	 */
 	public String mergeDocuments(ArrayList<FileAsBlob> ls) throws IOException;
+	
+	public void deletePDFFile();
 }

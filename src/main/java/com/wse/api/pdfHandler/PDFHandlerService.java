@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.io.MemoryUsageSetting;
@@ -14,13 +15,16 @@ import org.springframework.stereotype.Service;
 
 import com.wse.api.dto.FileAsBlob;
 import com.wse.api.utils.FileAsBlobComparator;
-
+import com.wse.api.utils.InternalFileUtils;
 import com.spire.doc.Document;
 import com.spire.doc.FileFormat;
+import com.spire.doc.ToPdfParameterList;
 
 @Service
 public class PDFHandlerService implements IPDFHandler {
 	private static Logger logger = Logger.getLogger(PDFHandlerService.class);
+	
+	private List<String> PDFFiles = new ArrayList<String>();
 
 	@Override
 	public String mergeDocuments(ArrayList<FileAsBlob> ls) throws IOException {
@@ -39,9 +43,14 @@ public class PDFHandlerService implements IPDFHandler {
 					Document document = new Document();
 					InputStream docFile = new ByteArrayInputStream(Base64.getDecoder().decode(element.getBody()));
 					document.loadFromStream(docFile,FileFormat.Auto);
+					 //create an instance of ToPdfParameterList.
+					ToPdfParameterList ppl=new ToPdfParameterList();
+					//embeds full fonts by default when IsEmbeddedAllFonts is set to true.
+					ppl.isEmbeddedAllFonts(true);
 					//save the document to a PDF file.
-					document.saveToFile(outputFile, FileFormat.PDF);
+					document.saveToFile(outputFile, ppl);
 					pdfMU.addSource(outputFile);
+					PDFFiles.add(outputFile);
 					} catch (FileNotFoundException e) {
 						System.out.println("cannot find outputFile for convert doc to pdf"+e.getMessage());
 						e.printStackTrace();
@@ -56,5 +65,18 @@ public class PDFHandlerService implements IPDFHandler {
 		pdfMU.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
 		logger.debug("merge fait");
 		return pdfMU.getDestinationFileName();
+	}
+	
+	@Override
+	public void deletePDFFile(){
+		if(PDFFiles != null && !PDFFiles.isEmpty()) {
+			for(String file : PDFFiles) {
+				try {
+					InternalFileUtils.deleteLocalFile(file);
+				} catch (Exception ex) {
+					logger.warn(ex.getMessage());
+				}
+			}
+		}
 	}
 }
