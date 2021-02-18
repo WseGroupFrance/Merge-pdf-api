@@ -63,6 +63,7 @@ public class PDFMergerController {
 		}
 		// generating response json
 		String returned = mapper.writer().writeValueAsString(fob);
+		System.out.println(returned);
 		// deleting document
 		pdfHandler.deletePDFFile();
 		try {
